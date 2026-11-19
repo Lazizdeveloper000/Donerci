@@ -28,11 +28,6 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install Android Platform 35
-      run: |
-        yes | sdkmanager --licenses || true
-        sdkmanager "platforms;android-35" "build-tools;35.0.0" || true
-
     - name: Install Node Dependencies
       run: npm install
 
@@ -45,13 +40,13 @@ jobs:
     - name: Build APK and AAB
       run: |
         cd android
-        ./gradlew assembleRelease assembleDebug bundleRelease --stacktrace
+        ./gradlew assembleDebug bundleRelease --stacktrace
 
     - name: Prepare Release Files
       run: |
         mkdir -p release_files
-        cp android/app/build/outputs/apk/release/*.apk release_files/DONERCI.apk || cp android/app/build/outputs/apk/debug/*.apk release_files/DONERCI.apk
-        cp android/app/build/outputs/bundle/release/*.aab release_files/DONERCI.aab || cp android/app/build/outputs/bundle/debug/*.aab release_files/DONERCI.aab
+        find android/app/build/outputs/apk/ -name "*.apk" -exec cp {} release_files/DONERCI.apk \;
+        find android/app/build/outputs/bundle/ -name "*.aab" -exec cp {} release_files/DONERCI.aab \;
         ls -la release_files/
 
     - name: Upload Artifacts
@@ -63,8 +58,8 @@ jobs:
     - name: Create GitHub Release with Direct Download Links
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.0
-        name: "DONERCI v1.0.0 (APK & AAB)"
+        tag_name: v1.0.1
+        name: "DONERCI v1.0.1 (APK & AAB)"
         body: |
           ### 🌯 DONERCI Mobil Ilova Fayllari
           - **DONERCI.apk** — Telefonlarga to'g'ridan-to'g'ri o'rnatish uchun
