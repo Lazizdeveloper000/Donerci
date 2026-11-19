@@ -37,10 +37,27 @@ jobs:
     - name: Make Gradle Wrapper Executable
       run: chmod +x ./android/gradlew
 
-    - name: Build APK and AAB
+    - name: Build Debug APK
+      id: build_apk
       run: |
         cd android
-        ./gradlew assembleDebug bundleRelease --stacktrace
+        ./gradlew assembleDebug --stacktrace > ../gradle_apk.log 2>&1 || {
+          ERR=$(tail -n 25 ../gradle_apk.log | tr '\n' ' ')
+          echo "::error title=GradleApkError::$ERR"
+          cat ../gradle_apk.log | tail -n 50
+          exit 1
+        }
+
+    - name: Build Android App Bundle (.aab)
+      id: build_aab
+      run: |
+        cd android
+        ./gradlew bundleRelease --stacktrace > ../gradle_aab.log 2>&1 || {
+          ERR=$(tail -n 25 ../gradle_aab.log | tr '\n' ' ')
+          echo "::error title=GradleAabError::$ERR"
+          cat ../gradle_aab.log | tail -n 50
+          exit 1
+        }
 
     - name: Prepare Release Files
       run: |
@@ -58,8 +75,8 @@ jobs:
     - name: Create GitHub Release with Direct Download Links
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.3
-        name: "DONERCI v1.0.3 (APK & AAB)"
+        tag_name: v1.0.4
+        name: "DONERCI v1.0.4 (APK & AAB)"
         body: |
           ### 🌯 DONERCI Mobil Ilova Fayllari
           - **DONERCI.apk** — Telefonlarga to'g'ridan-to'g'ri o'rnatish uchun
