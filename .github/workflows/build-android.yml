@@ -28,12 +28,6 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Install Android SDK Platform 35
-      run: |
-        sudo chown -R $USER:$USER $ANDROID_HOME
-        yes | sdkmanager --licenses || true
-        sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
     - name: Install Node Dependencies
       run: npm install
 
@@ -64,8 +58,8 @@ jobs:
     - name: Create GitHub Release with Direct Download Links
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.2
-        name: "DONERCI v1.0.2 (APK & AAB)"
+        tag_name: v1.0.3
+        name: "DONERCI v1.0.3 (APK & AAB)"
         body: |
           ### 🌯 DONERCI Mobil Ilova Fayllari
           - **DONERCI.apk** — Telefonlarga to'g'ridan-to'g'ri o'rnatish uchun
