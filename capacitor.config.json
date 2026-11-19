@@ -1,0 +1,9 @@
+{
+  "appId": "uz.donerci.app",
+  "appName": "DONERCI",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  }
+}

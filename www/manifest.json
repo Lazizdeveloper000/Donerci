@@ -1,0 +1,19 @@
+{
+  "name": "DONERCI — Qaynoq Lavash & Hot-dog Bar",
+  "short_name": "DONERCI",
+  "description": "Tandirdan yangi chiqqan lavash va hot-doglar eshigingizgacha 20–30 daqiqada yetkaziladi.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0c12",
+  "theme_color": "#7000ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "lavash.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}

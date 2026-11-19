@@ -1,0 +1,17 @@
+{
+  "name": "fasfut-loyiha",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000D\u0000o\u0000n\u0000e\u0000r\u0000c\u0000i\u0000\r\u0000 \u0000#\u0000 \u0000D\u0000o\u0000n\u0000e\u0000r\u0000c\u0000i\u0000\r\u0000 \u0000",
+  "main": "worker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@capacitor/android": "^8.6.2",
+    "@capacitor/cli": "^7.6.10",
+    "@capacitor/core": "^8.6.2"
+  }
+}

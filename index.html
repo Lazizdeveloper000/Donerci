@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DONERCI — Qaynoq Lavash & Hot-dog Bar</title>
+    <!-- PWA & Mobile App Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#7000ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="DONERCI">
+    <link rel="apple-touch-icon" href="lavash.jpg">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -193,6 +200,7 @@
 
         .uzum-search-container input {
             flex: 1;
+            min-width: 0;
             border: none;
             outline: none;
             background: transparent;
@@ -290,9 +298,13 @@
             justify-content: space-between;
             gap: 15px;
             overflow-x: auto;
+            scrollbar-width: none;
         }
+        .sub-bar-inner::-webkit-scrollbar { display: none; }
 
         .filter-tags { display: flex; gap: 8px; flex-wrap: nowrap; }
+
+        .delivery-promo { white-space: nowrap; font-size: 13px; color: var(--text-secondary); }
 
         .tag-pill {
             background: var(--bg-card);
@@ -404,6 +416,7 @@
             background: var(--grad-fire);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            white-space: nowrap;
         }
 
         .hero-text {
@@ -479,7 +492,15 @@
             overflow: hidden;
             background: #000;
         }
-        .cine-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+        .cine-bg {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; object-position: center;
+            z-index: 0;
+            pointer-events: none;
+        }
+        /* iOS Safari: video ustidagi native boshqaruv tugmalarini yashirish */
+        .cine-bg::-webkit-media-controls,
+        .cine-bg::-webkit-media-controls-start-playback-button { display: none !important; -webkit-appearance: none; }
         .cine-overlay {
             position: absolute; inset: 0; z-index: 1;
             background:
@@ -629,23 +650,52 @@
 
         .ribbon { position: absolute; top: 26px; left: 26px; z-index: 2; background: var(--grad-fire); color: #fff; font-size: 10.5px; font-weight: 800; letter-spacing: .5px; padding: 5px 11px; border-radius: var(--radius-full); box-shadow: 0 6px 16px rgba(255,75,43,.4); }
 
+        /* RASM JOYI: har doim bir xil nisbatda (4:3), har qanday ekranda moslashadi */
         .product-media {
-            height: 165px;
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
             background: radial-gradient(circle at center, var(--bg-surface) 0%, var(--bg-card) 100%);
             border-radius: var(--radius-md);
-            display: grid;
-            place-items: center;
-            font-size: 72px;
             margin-bottom: 14px;
             border: 1px solid var(--border);
-            transition: 0.3s transform ease;
             overflow: hidden;
+            transition: 0.3s transform ease;
         }
 
-        .product-media img { width: 100%; height: 100%; object-fit: contain; padding: 6px; filter: drop-shadow(0 10px 14px rgba(0,0,0,.35)); }
-        .product-media img.cover { object-fit: cover; padding: 0; filter: none; border-radius: inherit; }
+        .product-media.has-photo { background: #ffffff; }
 
-        .product-card:hover .product-media { transform: scale(1.04); }
+        .product-media img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+        }
+
+        /* Rasm hali qo'yilmagan bo'lsa chiqadigan joy */
+        .img-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            margin: 8px;
+            border: 2px dashed var(--border-hover);
+            border-radius: calc(var(--radius-md) - 4px);
+            color: var(--text-muted);
+            text-align: center;
+            padding: 8px;
+        }
+        .img-placeholder .ph-emoji { font-size: 46px; line-height: 1; opacity: .9; }
+        .img-placeholder b { font-size: 12px; font-weight: 800; color: var(--text-secondary); }
+        .img-placeholder small { font-size: 10.5px; opacity: .85; word-break: break-all; }
+
+        .product-card:hover .product-media { transform: scale(1.03); }
 
         .product-badge {
             font-size: 10px;
@@ -725,6 +775,7 @@
             top: 0;
             width: min(460px, 100%);
             height: 100vh;
+            height: 100dvh;
             background: var(--bg-surface);
             border-left: 1px solid var(--border-hover);
             z-index: 1600;
@@ -796,7 +847,7 @@
         .ship-bar { height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; margin-top: 8px; }
         #shipFill { height: 100%; width: 0; background: linear-gradient(90deg, #ff8a00, #ffb020); border-radius: 99px; transition: width .5s ease; }
         .promo-row { display: flex; gap: 8px; margin-bottom: 14px; }
-        .promo-row input { flex: 1; height: 42px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0 12px; font-size: 13px; outline: none; text-transform: uppercase; }
+        .promo-row input { flex: 1; min-width: 0; height: 42px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0 12px; font-size: 13px; outline: none; text-transform: uppercase; }
         .promo-row input:focus { border-color: #ffb020; }
         .promo-row button { padding: 0 16px; background: #ffb020; color: #1a1205; font-weight: 800; border-radius: var(--radius-sm); font-size: 13px; }
         .sum-lines { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed var(--border); }
@@ -925,6 +976,8 @@
         /* RECEIPT */
         .receipt {
             width: min(440px, 100%);
+            max-height: 92vh;
+            overflow-y: auto;
             background: #ffffff;
             color: #000000;
             border-radius: 20px;
@@ -1037,18 +1090,81 @@
             .footer-grid { grid-template-columns: 1fr; }
         }
 
+        /* ===== TELEFON (MOBIL) MOSLASHUVI ===== */
         @media (max-width: 768px) {
             .nav { flex-wrap: wrap; height: auto; padding: 12px 0; gap: 12px; }
-            .uzum-search-container { order: 3; width: 100%; }
-            .cine-stats { gap: 22px; }
-            .cine-text h1 { font-size: 34px; letter-spacing: -1px; }
+            .uzum-search-container { order: 3; width: 100%; flex-basis: 100%; }
+            .delivery-promo { display: none; }
+
+            /* Og'ir fon nurlari telefonni qotiradi — o'chiramiz */
+            .ambient-blob { display: none; }
+            .marquee { transform: none; margin: 0 0 16px; }
+
+            /* HERO: video fon telefonda toza va o'qiladigan bo'lsin */
+            .cine-hero {
+                min-height: 0;
+                align-items: flex-start;
+            }
+            .cine-bg {
+                object-position: 60% center;
+                transform: translateZ(0);
+            }
+            .cine-overlay {
+                background: linear-gradient(180deg,
+                    rgba(8,6,14,0.80) 0%,
+                    rgba(8,6,14,0.68) 45%,
+                    rgba(10,12,18,0.96) 100%);
+            }
+            .cine-content { padding: 34px 0 52px; gap: 30px; }
+            .cine-eyebrow { font-size: 10.5px; letter-spacing: 2px; margin-bottom: 12px; }
+            .cine-text h1 { font-size: clamp(32px, 9.5vw, 42px); letter-spacing: -1px; }
+            .cine-sub { font-size: 14.5px; margin: 14px 0 22px; }
+            .cine-cta { gap: 10px; }
+            .cta-orange { padding: 13px 22px; font-size: 14px; }
+            .cta-ghost { padding: 12px 18px; font-size: 13.5px; }
+            .cine-stats { gap: 18px; margin-top: 26px; padding-top: 18px; flex-wrap: wrap; }
+            .cine-stats strong { font-size: 18px; }
+            .cine-content .hero-visual-left { padding-bottom: 34px; }
+            .cine-content .visual-frame { max-width: 280px; }
+            .badge-craft { top: 8px; right: 4px; font-size: 10px; padding: 5px 11px; }
+            .cine-content .floating-card-lavash {
+                left: 50%;
+                transform: translateX(-50%);
+                bottom: 0;
+                width: min(92%, 340px);
+                min-width: 0;
+                padding: 12px 16px;
+            }
+            .cine-sound { right: 14px; bottom: 14px; width: 40px; height: 40px; font-size: 16px; }
+
+            .section-header-row h2 { font-size: 26px; }
             .products-grid { grid-template-columns: 1fr; }
             .form-row { grid-template-columns: 1fr; }
+            .modal-box { padding: 28px 20px; }
+            .fab-call { width: 48px; height: 48px; font-size: 21px; left: 14px; bottom: 16px; }
+            .toast-wrap { left: 14px; right: 14px; bottom: 76px; }
         }
 
         @media (max-width: 600px) {
             .why-grid { grid-template-columns: 1fr; }
             .promo-bar { font-size: 11.5px; }
+            .product-media { aspect-ratio: 16 / 11; }
+        }
+
+        @media (max-width: 480px) {
+            .brand { font-size: 17px; }
+            .sub-brand { letter-spacing: 1.2px; }
+            .logo-mark { width: 38px; height: 38px; font-size: 19px; }
+            #headerCityText { display: none; }
+            .location-pill-btn, .theme-toggle-btn { padding: 0 11px; }
+            .nav-actions { gap: 7px; }
+            .intro-controls { top: 12px; right: 12px; }
+            .intro-controls button { padding: 8px 13px; font-size: 12px; }
+        }
+
+        /* Harakatni kamaytirishni so'ragan foydalanuvchilar uchun */
+        @media (prefers-reduced-motion: reduce) {
+            .marquee-track, .visual-frame, .ambient-blob, .fab-call { animation: none !important; }
         }
     </style>
 </head>
@@ -1061,7 +1177,7 @@
 
 <!-- INTRO VIDEO (KIRGANDA: YETKAZIB BERISH VIDEOSI) -->
 <div class="intro-screen" id="introScreen">
-    <video id="introVideo" src="intro.mp4" poster="poster.jpg" playsinline preload="auto"></video>
+    <video id="introVideo" src="intro.mp4" poster="poster.jpg" playsinline webkit-playsinline preload="auto"></video>
     <div class="intro-controls">
         <button id="introSound">🔊 Ovozni yoqish</button>
         <button id="introSkip">O‘tkazib yuborish ⏭</button>
@@ -1126,7 +1242,7 @@
 
 <!-- HERO: TO'LIQ EKRANLI VIDEO FON -->
 <section class="hero cine-hero">
-    <video class="cine-bg" id="heroVideo" src="video_2026-11-15_13-08-28.mp4" poster="poster.jpg" autoplay muted loop playsinline preload="auto"></video>
+    <video class="cine-bg" id="heroVideo" src="video_2026-11-15_13-08-28.mp4" poster="poster.jpg" autoplay muted loop playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload nofullscreen noremoteplayback" aria-hidden="true" tabindex="-1"></video>
     <div class="cine-overlay"></div>
 
     <div class="container cine-content">
@@ -1152,7 +1268,7 @@
         <div class="hero-visual-left">
             <div class="badge-craft">🔥 TANDIR VA OLOVDAN</div>
             <div class="visual-frame">
-                <img src="lavash.jpg" onerror="this.onerror=null;this.src='lavash.jpg'" alt="DONERCI Qaynoq Lavash" class="hero-main-img">
+                <img src="lavash.jpg" alt="DONERCI Qaynoq Lavash" class="hero-main-img">
             </div>
             <div class="floating-card-lavash">
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 15px;">
@@ -1488,6 +1604,28 @@
         }
     }
 
+    // ============ HERO VIDEO: TELEFON UCHUN ============
+    const heroVideo = document.getElementById("heroVideo");
+    const conn = navigator.connection || {};
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Trafik tejash rejimi yoki "harakatni kamaytirish" yoqilgan bo'lsa, video o'ynamaydi (poster ko'rinadi)
+    const heroAllowed = !(conn.saveData || reduceMotion);
+    if (!heroAllowed) { heroVideo.removeAttribute("autoplay"); heroVideo.pause(); }
+
+    // Sahifa ko'rinmay qolganda (boshqa tab) videoni to'xtatib batareyani tejaymiz
+    document.addEventListener("visibilitychange", () => {
+        if (!heroAllowed || introScreen.classList.contains("active")) return;
+        if (document.hidden) heroVideo.pause();
+        else heroVideo.play().catch(() => {});
+    });
+
+    // iOS/Android ba'zan autoplay'ni bloklaydi: birinchi teginishda qayta urinib ko'ramiz
+    ["touchstart", "click"].forEach(ev =>
+        document.addEventListener(ev, () => {
+            if (heroAllowed && heroVideo.paused && !introScreen.classList.contains("active")) heroVideo.play().catch(() => {});
+        }, { once: true, passive: true })
+    );
+
     // INTRO VIDEO
     const introScreen = document.getElementById("introScreen");
     const introVideo = document.getElementById("introVideo");
@@ -1498,8 +1636,7 @@
     function closeIntro() {
         introScreen.classList.remove("active");
         introVideo.pause();
-        const hv = document.getElementById("heroVideo");
-        if (hv) hv.play().catch(() => {});
+        if (heroAllowed) heroVideo.play().catch(() => {});
     }
 
     function startIntro() {
@@ -1517,10 +1654,9 @@
 
     const heroSound = document.getElementById("heroSound");
     heroSound.addEventListener("click", () => {
-        const hv = document.getElementById("heroVideo");
-        hv.muted = !hv.muted;
-        heroSound.textContent = hv.muted ? "🔇" : "🔊";
-        hv.play().catch(() => {});
+        heroVideo.muted = !heroVideo.muted;
+        heroSound.textContent = heroVideo.muted ? "🔇" : "🔊";
+        heroVideo.play().catch(() => {});
     });
 
     introVideo.addEventListener("ended", closeIntro);
@@ -1552,112 +1688,69 @@
         localStorage.setItem("donerci_theme", isLight ? "light" : "dark");
     });
 
+    // =====================================================================
+    //  TAOM RASMLARI — SHU YERDA ALMASHTIRILADI
+    //  Rasm faylini index.html bilan BIR PAPKAGA qo'ying va nomini shu yerga yozing.
+    //  Bo'sh qoldirsangiz ("") yoki fayl topilmasa, rasm joyi (placeholder) ko'rinadi.
+    //  Sayt tayyor bo'lganda SHOW_PLACEHOLDER_HINT ni false qiling —
+    //  shunda mijozlarga fayl nomi ko'rinmaydi, faqat emoji chiqadi.
+    // =====================================================================
+    const SHOW_PLACEHOLDER_HINT = true;
+
+    const IMAGES = {
+        // --- LAVASHLAR (rasm qo'yilgan) ---
+        1: "photo_2026-11-18_13-10-52.jpg",       // Max Lavash Tandir
+        2: "photo_2026-11-18_13-10-52.jpg",       // Cheese Lavash   (o'z rasmingiz bo'lsa: "cheese-lavash.jpg")
+        3: "photo_2026-11-18_13-10-52.jpg",       // Mini Lavash     (o'z rasmingiz bo'lsa: "mini-lavash.jpg")
+        4: "photo_2026-11-18_13-10-52.jpg",       // Spicy Lavash    (o'z rasmingiz bo'lsa: "spicy-lavash.jpg")
+
+        // --- HOT-DOGLAR (rasmni o'zingiz qo'yasiz: shu nomlar bilan saqlang) ---
+        5: "Gemini_Generated_Image_kmnb5kmnb5kmnb5k.jpg",     // Fransuzcha Hot-dog
+        6: "Gemini_Generated_Image_kmnb5kmnb5kmnb5k.jpg",     // Max Double Hot-dog
+        7: "Gemini_Generated_Image_kmnb5kmnb5kmnb5k.jpg",     // Klassik Hot-dog
+        8: "Gemini_Generated_Image_kmnb5kmnb5kmnb5k.jpg",     // Pishloqli Hot-dog
+
+        // --- BOSHQALAR ---
+        9: "Gemini_Generated_Image_1rfahc1rfahc1rfa.jpg",                 // Burger
+        10: "kartoshka free.jpg",                // Kartoshka fri
+        11: "Pishloqli Fri.jpg",                // Pishloqli fri
+        12: "Gemini_Generated_Image_wlbpkiwlbpkiwlbp.jpg",                // Fanta
+        13: "cola img.jpg"                 // Coca-Cola
+    };
+
     // TAOMLAR RO'YXATI
     const products = [
-        {
-            id: 1,
-            name: "Max Lavash Tandir",
-            category: "lavash",
-            img: "lavash.png",
-            price: 36000,
-            emoji: "🌯",
-            description: "Sarxil go‘sht, pishloq, yangi bodring va pomidor, mualliflik sousi"
-        },
-        {
-            id: 2,
-            name: "Cheese Lavash (Pishloqli)",
-            category: "lavash",
-            img: "p-lavash1.jpg", cover: true,
-            price: 38000,
-            emoji: "🌯",
-            description: "Eritilgan qaymoqli mozzarella va cheddar pishloqlari bilan to‘yimli lavash"
-        },
-        {
-            id: 3,
-            name: "Mini Lavash",
-            category: "lavash",
-            img: "lavash.png",
-            price: 28000,
-            emoji: "🌯",
-            description: "Tez va mazali tamaddi uchun mayin mol go‘shti va qarsildoq sabzavotlar"
-        },
-        {
-            id: 4,
-            name: "Achchiq Spicy Lavash",
-            category: "lavash",
-            img: "p-lavash2.jpg", cover: true,
-            price: 37000,
-            emoji: "🌯",
-            description: "Xalapenyo qalampiri va maxsus achchiq chili sousi bilan o‘zgacha ta'm"
-        },
-        {
-            id: 5,
-            name: "Fransuzcha Hot-dog",
-            category: "hotdog",
-            price: 24000,
-            emoji: "🌭",
-            description: "Qarsildoq maxsus bulochka, sifatli sershira sosiska, xantallik sous"
-        },
-        {
-            id: 6,
-            name: "Max Double Hot-dog",
-            category: "hotdog",
-            price: 32000,
-            emoji: "🌭",
-            description: "Ikkita sosiska, marinadlangan piyoz, sous va eritilgan cheddor pishlog‘i"
-        },
-        {
-            id: 7,
-            name: "Klassik Hot-dog",
-            category: "hotdog",
-            price: 20000,
-            emoji: "🌭",
-            description: "Yumshoq bulochka, qaynoq sosiska, ketchup va mayonez bilan klassik ta'm"
-        },
-        {
-            id: 8,
-            name: "Pishloqli Hot-dog",
-            category: "hotdog",
-            price: 27000,
-            emoji: "🌭",
-            description: "Eritilgan issiq suyuq pishloq va qovurilgan qarsildoq piyoz bilan"
-        },
-        {
-            id: 9,
-            name: "Donerci Prime Burger",
-            category: "burger",
-            price: 42000,
-            emoji: "🍔",
-            description: "100% mol go‘shtidan tayyorlangan kotlet, yangi sabzavotlar va pishloq"
-        },
-        {
-            id: 10,
-            name: "Qarsildoq Kartoshka Fri",
-            category: "potato",
-            price: 18000,
-            emoji: "🍟",
-            description: "Tilla rangda qovurilgan tillarang va qarsildoq fri kartoshkasi"
-        },
-        {
-            id: 11,
-            name: "Pishloqli Fri",
-            category: "potato",
-            price: 24000,
-            emoji: "🍟",
-            description: "Issiq eritilgan cheddor sousi bilan qoplangan mazali fri"
-        },
-        {
-            id: 12,
-            name: "Muzdek Coca-Cola 0.5L",
-            category: "drink",
-            price: 12000,
-            emoji: "🥤",
-            description: "Sovutilgan yangilovchi gazlangan klassik ichimlik"
-        }
+        { id: 1, name: "Max Lavash Tandir", category: "lavash", price: 36000, emoji: "🌯",
+          description: "Sarxil go‘sht, pishloq, yangi bodring va pomidor, mualliflik sousi" },
+        { id: 2, name: "Cheese Lavash (Pishloqli)", category: "lavash", price: 38000, emoji: "🌯",
+          description: "Eritilgan qaymoqli mozzarella va cheddar pishloqlari bilan to‘yimli lavash" },
+        { id: 3, name: "Mini Lavash", category: "lavash", price: 28000, emoji: "🌯",
+          description: "Tez va mazali tamaddi uchun mayin mol go‘shti va qarsildoq sabzavotlar" },
+        { id: 4, name: "Achchiq Spicy Lavash", category: "lavash", price: 37000, emoji: "🌯",
+          description: "Xalapenyo qalampiri va maxsus achchiq chili sousi bilan o‘zgacha ta'm" },
+        { id: 5, name: "Fransuzcha Hot-dog", category: "hotdog", price: 24000, emoji: "🌭",
+          description: "Qarsildoq maxsus bulochka, sifatli sershira sosiska, xantallik sous" },
+        { id: 6, name: "Max Double Hot-dog", category: "hotdog", price: 32000, emoji: "🌭",
+          description: "Ikkita sosiska, marinadlangan piyoz, sous va eritilgan cheddor pishlog‘i" },
+        { id: 7, name: "Klassik Hot-dog", category: "hotdog", price: 20000, emoji: "🌭",
+          description: "Yumshoq bulochka, qaynoq sosiska, ketchup va mayonez bilan klassik ta'm" },
+        { id: 8, name: "Pishloqli Hot-dog", category: "hotdog", price: 27000, emoji: "🌭",
+          description: "Eritilgan issiq suyuq pishloq va qovurilgan qarsildoq piyoz bilan" },
+        { id: 9, name: "Donerci Prime Burger", category: "burger", price: 42000, emoji: "🍔",
+          description: "100% mol go‘shtidan tayyorlangan kotlet, yangi sabzavotlar va pishloq" },
+        { id: 10, name: "Qarsildoq Kartoshka Fri", category: "potato", price: 18000, emoji: "🍟",
+          description: "Tilla rangda qovurilgan tillarang va qarsildoq fri kartoshkasi" },
+        { id: 11, name: "Pishloqli Fri", category: "potato", price: 24000, emoji: "🍟",
+          description: "Issiq eritilgan cheddor sousi bilan qoplangan mazali fri" },
+         { id: 12, name: "Muzdek Fanta 1L", category: "drink", price: 10000, emoji: "🥤",
+          description: "Sovutilgan yangilovchi gazlangan klassik ichimlik" },
+        { id: 13, name: "Muzdek Coca-Cola 1L", category: "drink", price: 12000, emoji: "🥤",
+          description: "Sovutilgan yangilovchi gazlangan klassik ichimlik" }
+
     ];
 
     const TAGS = { 1: "🔥 HIT", 4: "🌶 ACHCHIQ", 6: "⭐ YANGI", 9: "👑 PREMIUM" };
-    products.forEach(p => { p.tag = TAGS[p.id] || ""; });
+    products.forEach(p => { p.tag = TAGS[p.id] || ""; p.img = IMAGES[p.id] || ""; });
 
     const FREE_DELIVERY_FROM = 100000;
     const DELIVERY_FEE = 12000;
@@ -1711,9 +1804,17 @@
         return p.toLocaleString("uz-UZ") + " so‘m";
     }
 
+    // Rasm yo'q yoki yuklanmasa chiqadigan joy
+    function placeholderHTML(item) {
+        const hint = SHOW_PLACEHOLDER_HINT
+            ? `<b>Rasm joyi</b><small>${item.img || "rasm nomini IMAGES ga yozing"}</small>`
+            : "";
+        return `<div class="img-placeholder"><span class="ph-emoji">${item.emoji}</span>${hint}</div>`;
+    }
+
     function mediaHTML(item) {
-        if (!item.img) return item.emoji;
-        return `<img src="${item.img}" ${item.cover ? 'class="cover"' : ""} alt="${item.name}" loading="lazy" onerror="this.replaceWith(document.createTextNode('${item.emoji}'))">`;
+        if (!item.img) return placeholderHTML(item);
+        return `<img src="${item.img}" alt="${item.name}" loading="lazy" decoding="async">`;
     }
 
     function renderProducts(list = products) {
@@ -1735,7 +1836,7 @@
             card.style.animationDelay = (idx * 0.05) + "s";
             card.innerHTML = `
                 ${item.tag ? `<span class="ribbon">${item.tag}</span>` : ""}
-                <div class="product-media">${mediaHTML(item)}</div>
+                <div class="product-media ${item.img ? "has-photo" : ""}">${mediaHTML(item)}</div>
                 <span class="product-badge">${item.category.toUpperCase()}</span>
                 <h3>${item.name}</h3>
                 <p>${item.description}</p>
@@ -1746,6 +1847,15 @@
                     </button>
                 </div>
             `;
+            // Rasm yuklanmasa — placeholder ko'rsatamiz
+            const im = card.querySelector(".product-media img");
+            if (im) {
+                im.addEventListener("error", () => {
+                    const box = im.parentElement;
+                    box.classList.remove("has-photo");
+                    box.innerHTML = placeholderHTML(item);
+                }, { once: true });
+            }
             productsContainer.appendChild(card);
         });
     }
@@ -2051,6 +2161,12 @@
 
     renderProducts();
     updateCart();
+    // PWA Service Worker
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+    }
 </script>
 </body>
 </html>
