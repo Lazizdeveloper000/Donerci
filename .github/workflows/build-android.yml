@@ -5,6 +5,9 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build APK and AAB
@@ -24,7 +27,11 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '17'
-        cache: 'gradle'
+
+    - name: Install Android Platform 35
+      run: |
+        yes | sdkmanager --licenses || true
+        sdkmanager "platforms;android-35" "build-tools;35.0.0" || true
 
     - name: Install Node Dependencies
       run: npm install
@@ -35,24 +42,35 @@ jobs:
     - name: Make Gradle Wrapper Executable
       run: chmod +x ./android/gradlew
 
-    - name: Build Debug APK
+    - name: Build APK and AAB
       run: |
         cd android
-        ./gradlew assembleDebug
+        ./gradlew assembleRelease assembleDebug bundleRelease --stacktrace
 
-    - name: Build Android App Bundle (.aab)
+    - name: Prepare Release Files
       run: |
-        cd android
-        ./gradlew bundleDebug bundleRelease || ./gradlew bundle
+        mkdir -p release_files
+        cp android/app/build/outputs/apk/release/*.apk release_files/DONERCI.apk || cp android/app/build/outputs/apk/debug/*.apk release_files/DONERCI.apk
+        cp android/app/build/outputs/bundle/release/*.aab release_files/DONERCI.aab || cp android/app/build/outputs/bundle/debug/*.aab release_files/DONERCI.aab
+        ls -la release_files/
 
-    - name: Upload APKs (.apk fayllar)
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: DONERCI-Telefon-Uchun-APK
-        path: android/app/build/outputs/apk/debug/app-debug.apk
+        name: DONERCI-Ilova-Fayllari-APK-va-AAB
+        path: release_files/*
 
-    - name: Upload AABs (.aab fayllar)
-      uses: actions/upload-artifact@v4
+    - name: Create GitHub Release with Direct Download Links
+      uses: softprops/action-gh-release@v2
       with:
-        name: DONERCI-Play-Market-AAB
-        path: android/app/build/outputs/bundle/**/*.aab
+        tag_name: v1.0.0
+        name: "DONERCI v1.0.0 (APK & AAB)"
+        body: |
+          ### 🌯 DONERCI Mobil Ilova Fayllari
+          - **DONERCI.apk** — Telefonlarga to'g'ridan-to'g'ri o'rnatish uchun
+          - **DONERCI.aab** — Google Play Store (Play Market)ga joylash uchun
+        files: |
+          release_files/DONERCI.apk
+          release_files/DONERCI.aab
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
