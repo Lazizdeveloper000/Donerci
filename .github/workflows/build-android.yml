@@ -28,6 +28,11 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
 
+    - name: Install Android Platform 35
+      run: |
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
     - name: Install Node Dependencies
       run: npm install
 
@@ -41,13 +46,21 @@ jobs:
       id: build_apk
       run: |
         cd android
-        ./gradlew assembleDebug --stacktrace
+        ./gradlew assembleDebug --stacktrace > ../gradle_apk.log 2>&1 || {
+          ERR=$(grep -E "(What went wrong:|Execution failed for task)" ../gradle_apk.log -A 6 | tr '\n' ' ')
+          echo "::error title=GradleApkError::$ERR"
+          exit 1
+        }
 
     - name: Build Android App Bundle (.aab)
       id: build_aab
       run: |
         cd android
-        ./gradlew bundleRelease --stacktrace
+        ./gradlew bundleRelease --stacktrace > ../gradle_aab.log 2>&1 || {
+          ERR=$(grep -E "(What went wrong:|Execution failed for task)" ../gradle_aab.log -A 6 | tr '\n' ' ')
+          echo "::error title=GradleAabError::$ERR"
+          exit 1
+        }
 
     - name: Prepare Release Files
       run: |
@@ -65,8 +78,8 @@ jobs:
     - name: Create GitHub Release with Direct Download Links
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v1.0.6
-        name: "DONERCI v1.0.6 (APK & AAB)"
+        tag_name: v1.0.7
+        name: "DONERCI v1.0.7 (APK & AAB)"
         body: |
           ### 🌯 DONERCI Mobil Ilova Fayllari
           - **DONERCI.apk** — Telefonlarga to'g'ridan-to'g'ri o'rnatish uchun
